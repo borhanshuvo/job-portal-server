@@ -5,18 +5,13 @@ const app = express();
 const port = 5000;
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const admin = require('firebase-admin');
-const serviceAccount = require("./job-portal-jp-firebase-adminsdk-xglwf-a30c393fff.json");
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 require('dotenv').config();
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-});
 
 app.get('/', (req, res) => {
     res.send('Hello Buddy');
@@ -231,8 +226,8 @@ client.connect(err => {
             })
     });
 
-     // all apply job post per user
-     app.get('/applyJobPostList', (req, res) => {
+    // all apply job post per user
+    app.get('/applyJobPostList', (req, res) => {
         jobApplyCollection.find({ email: req.query.email })
             .toArray((err, documents) => {
                 res.send(documents);
