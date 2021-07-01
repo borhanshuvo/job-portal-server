@@ -21,91 +21,11 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
-    const adminsCollection = client.db("jobPortal").collection("admin");
-    const jobSeekersCollection = client.db("jobPortal").collection("jobSeeker");
-    const employeesCollection = client.db("jobPortal").collection("employee");
     const servicesCollection = client.db("jobPortal").collection("service");
     const bookingCollection = client.db("jobPortal").collection("booking");
     const jobPostCollection = client.db("jobPortal").collection("jobPost");
     const jobApplyCollection = client.db("jobPortal").collection("jobApply");
-
-    // add admin
-    app.post('/addAdmin', (req, res) => {
-        const admin = req.body;
-        adminsCollection.insertOne(admin)
-            .then(result => {
-                res.send(result.insertedCount > 0)
-            })
-    });
-
-    // all admin list
-    app.get('/adminList', (req, res) => {
-        adminsCollection.find({})
-            .toArray((err, documents) => {
-                res.send(documents);
-            });
-    });
-
-    // find admin user
-    app.post('/isAdmin', (req, res) => {
-        const email = req.body.email;
-        adminsCollection.find({ email: email })
-            .toArray((err, admins) => {
-                res.send(admins.length > 0);
-            })
-    })
-
-    // add employee
-    app.post('/addEmployee', (req, res) => {
-        const employee = req.body;
-        employeesCollection.insertOne(employee)
-            .then(result => {
-                res.send(result.insertedCount > 0)
-            })
-    });
-
-    // all employee list
-    app.get('/employeeList', (req, res) => {
-        employeesCollection.find({})
-            .toArray((err, documents) => {
-                res.send(documents);
-            });
-    });
-
-    // find employee user
-    app.post('/isEmployee', (req, res) => {
-        const email = req.body.email;
-        employeesCollection.find({ email: email })
-            .toArray((err, employees) => {
-                res.send(employees.length > 0);
-            })
-    })
-
-    // add job seeker
-    app.post('/addJobSeeker', (req, res) => {
-        const jobSeeker = req.body;
-        jobSeekersCollection.insertOne(jobSeeker)
-            .then(result => {
-                res.send(result.insertedCount > 0)
-            })
-    });
-
-    // all job seeker list
-    app.get('/jobSeekerList', (req, res) => {
-        jobSeekersCollection.find({})
-            .toArray((err, documents) => {
-                res.send(documents);
-            });
-    });
-
-    // find job seeker user
-    app.post('/isJobSeeker', (req, res) => {
-        const email = req.body.email;
-        jobSeekersCollection.find({ email: email })
-            .toArray((err, jobSeekers) => {
-                res.send(jobSeekers.length > 0);
-            })
-    })
+    const usersCollection = client.db("jobPortal").collection("users");
 
     // add service
     app.post('/addService', (req, res) => {
@@ -242,6 +162,35 @@ client.connect(err => {
             });
     });
 
+     // add user
+     app.post('/addUser', (req, res) => {
+        const user = req.body;
+        usersCollection.insertOne(user)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
+    });
+
+    // all admin list
+    app.get('/usersList', (req, res) => {
+        usersCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            });
+    });
+
+    // find user
+    app.get('/isUser', (req, res) => {
+        const email = req.query.email;
+        usersCollection.find({ email: req.query.email })
+            .toArray((err, users) => {
+                res.send(users);
+            })
+    })
+
 });
 
 app.listen(process.env.PORT || port);
+
+// "start": "node index.js",
+//     "start:dev": "nodemon index.js",
