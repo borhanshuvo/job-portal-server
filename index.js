@@ -188,6 +188,15 @@ client.connect(err => {
             })
     })
 
+    // all job post per user
+    app.get('/searchJobPostLists', (req, res) => {
+        const search = req.query.search;
+        jobPostCollection.find({ companyName: {$regex: search}, status: 'active' })
+            .toArray((err, documents) => {
+                res.send(documents);
+            });
+    });
+
 });
 
 app.listen(process.env.PORT || port);
